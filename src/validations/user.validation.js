@@ -1,4 +1,4 @@
-import { body } from "express-validator";
+import { body, query } from "express-validator";
 
 export default class UserValidation {
   createUser() {
@@ -17,4 +17,15 @@ export default class UserValidation {
         .isNumeric().withMessage('registrationNumber must be integer'),
     ];
   };
+
+  getUser() {
+    return [
+      query('accountNumber')
+        .isOptional()
+        .isNumeric().withMessage('accountNumber must be integer'),
+      query('registrationNumber')
+        .isOptional()
+        .isNumeric().withMessage('registrationNumber must be integer'),
+    ]
+  }
 };

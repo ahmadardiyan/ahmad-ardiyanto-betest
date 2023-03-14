@@ -1,14 +1,39 @@
 import userModel from '../models/user.model.js';
 import accountModel from '../models/account.model.js';
+import PaginateHelper from '../helpers/paginate.helper.js';
 
 export default class UserService {
   constructor() {
     this.userModel = userModel;
     this.accountModel = accountModel;
+    this.paginateHelper = new PaginateHelper()
   }
 
-  async getUsers() {
-    let users = await userModel.find();
+  async getUsers(query) {
+    const {
+      page,
+      limit,
+      skip,
+      accountNumber,
+      registrationNumber
+    } = query
+
+    let filter = {}
+    if (accountNumber) {
+      filter['accountNumber'] = {
+        $eq: accountNumber
+      }
+    }
+
+    if (registrationNumber) {
+      filter['registrationNumber'] = {
+        $eq: registrationNumber
+      }
+    }
+
+    let count = await userModel.find(filter).countDocuments().exec();
+    let users = await userModel.find(filter).limit(limit).skip(skip);
+
     users = users.map( user => {
       return {
         userId: user._id,
@@ -19,7 +44,9 @@ export default class UserService {
       };
     });
 
-    return users;
+    const meta = this.paginateHelper.createMeta({limit, totalData: count, page })
+
+    return {users, meta};
   }
 
   async createUser(body) {
@@ -49,7 +76,7 @@ export default class UserService {
       userId = user._id;
   
       const account = await accountModel.create({
-        user: userId,
+        userId,
         userName,
         password,
       })
@@ -69,4 +96,14 @@ export default class UserService {
     }
   }
 
+  async getUser(id) {
+    return await this.userModel.findOne({_id: id})
+  }
+  
+  async updateUser({id, body}) {
+    
+  }
+  async deleteUser(id) {
+
+  }
 }

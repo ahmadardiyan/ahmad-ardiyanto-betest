@@ -18,7 +18,7 @@ const accountSchema = new mongoose.Schema({
     required: true,
     default: Date.now,
   },
-  user: {
+  userId: {
     type: ObjectId,
     ref: 'User',
     required: true

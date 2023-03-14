@@ -10,7 +10,8 @@ const userSchema = new mongoose.Schema({
   },
   accountNumber: {
     type: Number,
-    required: true
+    required: true,
+    unique: true
   },
   emailAddress: {
     type: String,
@@ -20,7 +21,8 @@ const userSchema = new mongoose.Schema({
   },
   registrationNumber: {
     type: Number,
-    required: true
+    required: true,
+    unique: true
   },
 }, { timestamps: true });
 

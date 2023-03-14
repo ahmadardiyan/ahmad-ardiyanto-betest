@@ -8,7 +8,9 @@ export default class UserController {
 
   async getUsers(req, res) {
     try {
-      let users = await this.userService.getUsers();
+      const {query} = req;
+
+      let {users, meta} = await this.userService.getUsers(query);
   
       if (!users) {
         users = [];
@@ -18,7 +20,8 @@ export default class UserController {
         status: 'OK',
         message: 'data users found',
         data: {
-          users
+          users,
+          meta
         }
       })
     } catch (error) {
@@ -54,6 +57,66 @@ export default class UserController {
       return res.status(400).json({
         status: 'FAILED',
         message: 'failed create user',
+        data: {
+          error: error.message
+        }
+      })
+    }
+  }
+
+  async getUser(req, res) {
+    try {
+      const { id } = req.params
+
+      const user = await this.userService.getUser(id)
+
+      if (!user) {
+        return res.status(404).json({
+          status: 'FAILED',
+          message: 'data user not found',
+          data: {}
+        })
+      }
+
+      return res.status(200).json({
+        status: 'OK',
+        message: 'data user found',
+        data: {
+          user
+        }
+      })
+    } catch (error) {
+      return res.status(400).json({
+        status: 'FAILED',
+        message: 'failed get user',
+        data: {
+          error: error.message
+        }
+      })
+    }
+  }
+  
+  async updateUser(req, res) {
+    try {
+      
+    } catch (error) {
+      return res.status(400).json({
+        status: 'FAILED',
+        message: 'failed update user',
+        data: {
+          error: error.message
+        }
+      })
+    }
+  }
+
+  async deleteUser(req, res) {
+    try {
+    
+    } catch (error) {
+      return res.status(400).json({
+        status: 'FAILED',
+        message: 'failed delete user',
         data: {
           error: error.message
         }

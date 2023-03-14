@@ -12,7 +12,7 @@ export default class AccountService {
       const account = await this.accountModel
                               .findOne({ userName })
                               .populate({ 
-                                path: 'user',
+                                path: 'userId',
                                 select: '_id fullName emailAddress'
                               })
 
@@ -52,8 +52,8 @@ export default class AccountService {
     const data = {
       id: account._id,
       userName: account.userName,
-      fullName: account.user.fullName,
-      emailAddress: account.user.emailAddress
+      fullName: account.userId.fullName,
+      emailAddress: account.userId.emailAddress
     }
 
     const accessToken = await jwt.sign(data, process.env.SECRET_ACCESS_TOKEN_KEY, { expiresIn: process.env.EXPIRED_ACCESS_TOKEN})
