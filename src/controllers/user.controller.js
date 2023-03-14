@@ -7,14 +7,29 @@ export default class UserController {
   }
 
   async getUsers(req, res) {
-    const users = await this.userService.getUsers();
-    return res.status(200).json({
-      status: 'OK',
-      message: 'data users found',
-      data: {
-        users
+    try {
+      let users = await this.userService.getUsers();
+  
+      if (!users) {
+        users = [];
       }
-    })
+  
+      return res.status(200).json({
+        status: 'OK',
+        message: 'data users found',
+        data: {
+          users
+        }
+      })
+    } catch (error) {
+      return res.status(400).json({
+        status: 'FAILED',
+        message: 'failed create user',
+        data: {
+          error: error.message
+        }
+      })
+    }
   }
 
   async createUser(req, res) {

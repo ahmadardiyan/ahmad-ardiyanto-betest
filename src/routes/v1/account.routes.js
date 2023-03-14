@@ -1,8 +1,9 @@
 import express from 'express';
-const router = express.Router();
+import AccountController from '../../controllers/account.controller.js';
 
-router.post('', (req, res) => {
-  res.send('post login');
-});
+const router = express.Router();
+const accountController = new AccountController()
+
+router.post('/login', async (req, res) => await accountController.login(req, res));
 
 export default router;

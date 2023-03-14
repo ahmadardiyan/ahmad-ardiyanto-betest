@@ -49,9 +49,7 @@ export default class UserService {
       userId = user._id;
   
       const account = await accountModel.create({
-        userId: {
-          _id: userId
-        },
+        user: userId,
         userName,
         password,
       })

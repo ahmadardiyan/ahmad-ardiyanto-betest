@@ -18,12 +18,10 @@ const accountSchema = new mongoose.Schema({
     required: true,
     default: Date.now,
   },
-  userId: {
-    _id: {
-        type: ObjectId,
-        ref: 'User',
-        required: true
-    },
+  user: {
+    type: ObjectId,
+    ref: 'User',
+    required: true
   }
 }, { timestamps: true });
 
