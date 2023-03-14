@@ -8,7 +8,13 @@ export default class UserController {
 
   async getUsers(req, res) {
     const users = await this.userService.getUsers();
-    res.send(users);
+    return res.status(200).json({
+      status: 'OK',
+      message: 'data users found',
+      data: {
+        users
+      }
+    })
   }
 
   async createUser(req, res) {
@@ -22,7 +28,7 @@ export default class UserController {
 
       const { body } = req;
       const user = await this.userService.createUser(body);
-      res.status(201).json({
+      return res.status(201).json({
         status: 'OK',
         message: 'create user successfully',
         data: {
@@ -30,7 +36,7 @@ export default class UserController {
         }
       })
     } catch (error) {
-      res.status(400).json({
+      return res.status(400).json({
         status: 'FAILED',
         message: 'failed create user',
         data: {

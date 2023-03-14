@@ -8,7 +8,18 @@ export default class UserService {
   }
 
   async getUsers() {
-    return await userModel.find();
+    let users = await userModel.find();
+    users = users.map( user => {
+      return {
+        userId: user._id,
+        fullName: user.fullName,
+        emailAddress: user.emailAddress,
+        accountNumber: user.accountNumber,
+        registrationNumber: user.registrationNumber
+      };
+    });
+
+    return users;
   }
 
   async createUser(body) {
