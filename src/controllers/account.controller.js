@@ -1,4 +1,6 @@
 import AccountService from '../services/account.service.js'
+import { validationResult } from 'express-validator';
+
 export default class AccountController {
   constructor() {
     this.accountService = new AccountService;

@@ -1,8 +1,10 @@
 import AccountService from "../services/account.service.js";
 
-const accountService = new AccountService()
-
 export default class AccountMiddleware {
+  constructor() {
+    this.accountService = new AccountService()
+  }
+
   async verifyToken(req, res, next) {
     try {
       const header = req.headers['authorization'];
@@ -18,7 +20,7 @@ export default class AccountMiddleware {
         })
       }
     
-      const payload = await accountService.verifyToken(token)
+      const payload = await this.accountService.verifyToken(token)
 
       req.user = payload
       next();
