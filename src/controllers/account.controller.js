@@ -6,17 +6,25 @@ export default class AccountController {
 
   async login(req, res) {
     try {
+      const errors = validationResult(req);
+
+      if (!errors.isEmpty()) {
+        res.status(400).json({ errors });
+        return;
+      }
+      
       const {
         userName, password
       } = req.body;
 
-      const result = await this.accountService.login({ userName, password })
+      const {accessToken, expiredOn} = await this.accountService.login({ userName, password })
 
       res.status(200).json({
         status: 'OK',
         message: 'login succesfully',
         data: {
-          accessToken: result
+          accessToken,
+          expiredOn
         }
       })
     } catch (error) {

@@ -32,10 +32,13 @@ export default class AccountService {
         throw new Error('failed login! failed generate token.')
       }
 
+      const decoded = jwt.decode(accessToken);
+      const expiredOn = decoded.exp
+
       account.lastLoginDateTime = Date.now();
       await account.save();
 
-      return accessToken
+      return {accessToken, expiredOn}
     } catch (error) {
       throw new Error(error.message);
     }
@@ -53,8 +56,14 @@ export default class AccountService {
       emailAddress: account.user.emailAddress
     }
 
-    const accessToken = jwt.sign(data, process.env.SECRET_ACCESS_TOKEN_KEY, { expiresIn: process.env.EXPIRED_ACCESS_TOKEN})
+    const accessToken = await jwt.sign(data, process.env.SECRET_ACCESS_TOKEN_KEY, { expiresIn: process.env.EXPIRED_ACCESS_TOKEN})
 
     return accessToken || ''
+  }
+
+  async verifyToken (token) {
+    const payload = await jwt.verify(token, process.env.SECRET_ACCESS_TOKEN_KEY)
+    
+    return payload;
   }
 }
