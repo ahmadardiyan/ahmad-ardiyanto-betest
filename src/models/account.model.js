@@ -1,4 +1,5 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
+import bcrypt from 'bcrypt';
 const { ObjectId }= mongoose.Schema;
 
 const accountSchema = new mongoose.Schema({
@@ -24,7 +25,7 @@ const accountSchema = new mongoose.Schema({
         required: true
     },
   }
-});
+}, { timestamps: true });
 
 accountSchema.pre('save', async function(next) {
   const account = this;

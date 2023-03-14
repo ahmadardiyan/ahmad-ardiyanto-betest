@@ -1,6 +1,6 @@
-const express = require('express');
-const userRoutes = require('./user.routes');
-const accountRoutes = require('./account.routes');
+import express from 'express'
+import userRoutes from './user.routes.js'
+import accountRoutes from './account.routes.js'
 
 const router = express.Router();
 
@@ -11,4 +11,4 @@ router.route('/').get((req, res) => {
 router.use('/accounts', accountRoutes)
 router.use('/users', userRoutes)
 
-module.exports = router;
+export default router;

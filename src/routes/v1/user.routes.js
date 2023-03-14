@@ -1,8 +1,13 @@
-const express = require("express");
+import express from "express";
+import UserController from "../../controllers/user.controller.js";
+import UserValidation from "../../validations/user.validation.js";
+
 const router = express.Router();
 
-router.get('', (req, res) => {
-  res.send('get all users');
-});
+const userValidation = new UserValidation();
+const userController = new UserController();
 
-module.exports = router;
+router.get('', async (req, res) => await userController.getUsers(req, res));
+router.post('', userValidation.createUser(), async (req, res) => await userController.createUser(req, res));
+
+export default router;
