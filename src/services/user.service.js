@@ -6,7 +6,7 @@ export default class UserService {
   constructor() {
     this.userModel = userModel;
     this.accountModel = accountModel;
-    this.paginateHelper = new PaginateHelper()
+    this.paginateHelper = new PaginateHelper();
   }
 
   async getUsers(query) {
@@ -31,8 +31,8 @@ export default class UserService {
       }
     }
 
-    let count = await userModel.find(filter).countDocuments().exec();
-    let users = await userModel.find(filter).limit(limit).skip(skip);
+    let count = await this.userModel.find(filter).countDocuments().exec();
+    let users = await this.userModel.find(filter).limit(limit).skip(skip);
 
     users = users.map( user => {
       return {
@@ -62,7 +62,7 @@ export default class UserService {
         registrationNumber
       } = body
       
-      const user = await userModel.create({
+      const user = await this.userModel.create({
         fullName,
         emailAddress,
         accountNumber,
@@ -89,7 +89,7 @@ export default class UserService {
       return user;
     } catch (error) {
       if (userId) {
-        await userModel.deleteOne({_id: userId})
+        await this.userModel.deleteOne({_id: userId})
       }
 
       throw new Error(error.message)
@@ -108,7 +108,7 @@ export default class UserService {
       registrationNumber
     } = body;
 
-    const user = await userModel.updateOne(
+    const user = await this.userModel.updateOne(
       { _id: id }, 
       {
         fullName,

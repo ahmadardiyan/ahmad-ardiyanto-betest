@@ -8,6 +8,13 @@ export default class UserController {
 
   async getUsers(req, res) {
     try {
+      const errors = validationResult(req);
+
+      if (!errors.isEmpty()) {
+        res.status(400).json({ errors });
+        return;
+      }
+      
       const {query} = req;
 
       let {users, meta} = await this.userService.getUsers(query);
@@ -27,7 +34,7 @@ export default class UserController {
     } catch (error) {
       return res.status(400).json({
         status: 'FAILED',
-        message: 'failed create user',
+        message: 'failed get users',
         data: {
           error: error.message
         }

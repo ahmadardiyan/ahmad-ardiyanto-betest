@@ -39,4 +39,40 @@ export default class AccountController {
       })
     }
   }
+
+  async getAccounts (req, res) {
+    try {
+      const errors = validationResult(req);
+
+      if (!errors.isEmpty()) {
+        res.status(400).json({ errors });
+        return;
+      }
+
+      const {query} = req;
+
+      let {accounts, meta} = await this.accountService.getAccounts(query);
+  
+      if (!accounts) {
+        accounts = [];
+      }
+  
+      return res.status(200).json({
+        status: 'OK',
+        message: 'data accounts found',
+        data: {
+          accounts,
+          meta
+        }
+      })
+    } catch (error) {
+      return res.status(400).json({
+        status: 'FAILED',
+        message: 'failed get accounts',
+        data: {
+          error: error.message
+        }
+      })
+    }
+  }
 }

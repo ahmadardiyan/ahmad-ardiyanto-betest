@@ -1,10 +1,12 @@
 import accountModel from "../models/account.model.js";
+import PaginateHelper from '../helpers/paginate.helper.js';
 import bcrypt from 'bcrypt';
 import jwt from "jsonwebtoken";
 
 export default class AccountService {
   constructor() {
     this.accountModel = accountModel;
+    this.paginateHelper = new PaginateHelper();
   }
 
   async login({ userName, password }) {
@@ -66,5 +68,56 @@ export default class AccountService {
     const payload = await jwt.verify(token, process.env.SECRET_ACCESS_TOKEN_KEY)
     
     return payload;
+  }
+
+  async getAccounts (query) {
+    const {
+      page,
+      limit,
+      skip,
+      lastLoginDay,
+      findLastLoginBy
+    } = query;
+
+    let filter = {};
+    if (lastLoginDay) {
+
+      const dayValue = 24 * 60 * 60 * 1000;
+      const day = new Date(Date.now() - (lastLoginDay * dayValue))
+
+      let valueFilter = {
+        $gte: day
+      }
+
+      if (findLastLoginBy == 'after') {
+        valueFilter = {
+          $lte: day
+        }
+      }
+
+      filter['lastLoginDateTime'] = valueFilter
+    }
+
+
+    let count = await this.accountModel.find(filter).countDocuments().exec();
+    let accounts = await this.accountModel.find(filter)
+                            .populate({ 
+                              path: 'userId',
+                              select: '_id'
+                            })
+                            .limit(limit)
+                            .skip(skip);
+
+    accounts = accounts.map( account => {
+      return {
+        accountId: account._id,
+        userId: account.userId._id,
+        userName: account.userName,
+        lastLoginDateTime: account.lastLoginDateTime
+      }
+    });
+
+    const meta = this.paginateHelper.createMeta({limit, totalData: count, page })
+    return {accounts, meta};
   }
 }

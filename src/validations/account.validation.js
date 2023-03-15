@@ -1,4 +1,4 @@
-import { body } from "express-validator";
+import { body, query } from "express-validator";
 
 export default class UserValidation {
   login() {
@@ -9,4 +9,15 @@ export default class UserValidation {
         .isLength({ min: 8 }).withMessage('password length must more than 8 character'),
     ];
   };
+
+  getAccounts() {
+    return [
+      query('lastLoginDay')
+        .optional()
+        .isInt({ min: 1}),
+      query('findLastLoginBy')
+        .optional()
+        .isIn(["after", "before"])
+    ];
+  }
 };
