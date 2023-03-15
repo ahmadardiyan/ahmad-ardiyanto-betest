@@ -130,4 +130,33 @@ export default class AccountService {
 
     return account;
   }
+
+  async updateAccount({id, body}) {
+    const {
+      userName,
+      password
+    } = body;
+
+    const account = await this.accountModel.updateOne(
+      { _id: id }, 
+      {
+        userName,
+        password
+      }
+    );
+
+    if (!account.matchedCount) {
+      throw new Error('failed to update account, account not found')
+    }
+
+    if (!account || !account.modifiedCount) {
+      throw new Error('failed to update account into database')
+    };
+
+    return account;
+  }
+
+  async deleteAccount(id) {
+    return await this.accountModel.deleteOne({_id: id})
+  }
 }

@@ -26,6 +26,7 @@ router.get('/:id',
 
 router.patch('/:id',
   async (req, res, next) => await accountMiddleware.verifyToken(req, res, next),
+  userValidation.createUser(),
   async (req, res) => await userController.updateUser(req, res));
 
 router.delete('/:id',

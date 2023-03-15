@@ -29,7 +29,7 @@ export default class UserValidation {
     ]
   }
 
-  createUser() {
+  updateUser() {
     return [
       body('fullName')
         .optional()

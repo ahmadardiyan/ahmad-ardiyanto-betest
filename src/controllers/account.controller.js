@@ -103,4 +103,71 @@ export default class AccountController {
       })
     }
   }
+
+  async updateAccount (req, res) {
+    try {
+      const errors = validationResult(req);
+
+      if (!errors.isEmpty()) {
+        res.status(400).json({ errors });
+        return;
+      }
+
+      const { body } = req;
+      const { id } = req.params;
+
+      const result = await this.accountService.updateAccount({id, body});
+
+      if (!result || !result.modifiedCount) {
+        throw new Error('failed update account');
+      }
+      
+      return res.status(200).json({
+        status: 'OK',
+        message: 'update account successfully',
+        data: {}
+      })
+      
+    } catch (error) {
+      return res.status(400).json({
+        status: 'FAILED',
+        message: 'failed update account',
+        data: {
+          error: error.message
+        }
+      })
+    }
+  }
+
+  async deleteAccount(req, res) {
+    try {
+      const { id } = req.params;
+      const { user } = req;
+
+      if (user.accountId == id) {
+        throw new Error('can not delete yourself');
+      };
+
+      const result = await this.accountService.deleteAccount(id);
+
+      if (!result.deleteCount) {
+        throw new Error('failed delete account')
+      }
+
+      return res.status(200).json({
+        status: 'OK',
+        message: 'delete account successfully',
+        data: {}
+      })
+
+    } catch (error) {
+      return res.status(400).json({
+        status: 'FAILED',
+        message: 'failed delete account',
+        data: {
+          error: error.message
+        }
+      })
+    }
+  }
 }
