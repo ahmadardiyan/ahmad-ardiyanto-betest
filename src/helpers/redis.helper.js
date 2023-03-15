@@ -1,4 +1,4 @@
-import redis from 'redis';
+import * as redis from 'redis';
 
 export default class RedisHelper {
     constructor() {
