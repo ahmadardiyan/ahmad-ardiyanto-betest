@@ -105,6 +105,8 @@ export default class UserService {
         throw new Error('failed to create user into database')
       }
   
+      await this.redisHelper.deleteRedis({ key: 'get-users', isDeleteAllSimilar: true});
+
       return user;
     } catch (error) {
       if (userId) {
@@ -145,9 +147,13 @@ export default class UserService {
       throw new Error('failed to update user into database')
     };
 
+    await this.redisHelper.deleteRedis({ key: 'get-users', isDeleteAllSimilar: true});
+
     return user;
   }
   async deleteUser(id) {
+    await this.redisHelper.deleteRedis({ key: 'get-users', isDeleteAllSimilar: true});
+
     return await this.userModel.deleteOne({_id: id})
   }
 }

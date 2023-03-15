@@ -25,4 +25,16 @@ export default class RedisHelper {
       const result = await this.redisClient.get(key);
       return JSON.parse(result);
     }
+
+    async deleteRedis({key, isDeleteAllSimilar}) {
+      if (isDeleteAllSimilar) {
+        const keys = await this.redisClient.keys(`${key}*`);
+
+        for (const key of keys) {
+          await this.redisClient.del(key);
+        }
+      } else {
+        await this.redisClient.del(key);
+      }
+    }
 }
