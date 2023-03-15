@@ -46,6 +46,11 @@ export default class UserController {
 
       const { body } = req;
       const user = await this.userService.createUser(body);
+
+      if (!user) {
+        throw new Error('failed create user');
+      }
+      
       return res.status(201).json({
         status: 'OK',
         message: 'create user successfully',
@@ -94,6 +99,27 @@ export default class UserController {
   
   async updateUser(req, res) {
     try {
+      const errors = validationResult(req);
+
+      if (!errors.isEmpty()) {
+        res.status(400).json({ errors });
+        return;
+      }
+
+      const { body } = req;
+      const { id } = req.params;
+
+      const result = await this.userService.updateUser({id, body});
+
+      if (!result || !result.modifiedCount) {
+        throw new Error('failed update user');
+      }
+      
+      return res.status(200).json({
+        status: 'OK',
+        message: 'update user successfully',
+        data: {}
+      })
       
     } catch (error) {
       return res.status(400).json({

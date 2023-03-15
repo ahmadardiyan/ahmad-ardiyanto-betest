@@ -97,11 +97,36 @@ export default class UserService {
   }
 
   async getUser(id) {
-    return await this.userModel.findOne({_id: id})
+    return await this.userModel.findOne({ _id: id })
   }
   
   async updateUser({id, body}) {
+    const {
+      fullName,
+      emailAddress,
+      accountNumber,
+      registrationNumber
+    } = body;
 
+    const user = await userModel.updateOne(
+      { _id: id }, 
+      {
+        fullName,
+        emailAddress,
+        accountNumber,
+        registrationNumber
+      }
+    );
+
+    if (!user.matchedCount) {
+      throw new Error('failed to update user, user not found')
+    }
+
+    if (!user || !user.modifiedCount) {
+      throw new Error('failed to update user into database')
+    };
+
+    return user;
   }
   async deleteUser(id) {
     return await this.userModel.deleteOne({_id: id})

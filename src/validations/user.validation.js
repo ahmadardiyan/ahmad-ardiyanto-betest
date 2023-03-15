@@ -21,11 +21,28 @@ export default class UserValidation {
   getUser() {
     return [
       query('accountNumber')
-        .isOptional()
+        .optional()
         .isNumeric().withMessage('accountNumber must be integer'),
       query('registrationNumber')
-        .isOptional()
+        .optional()
         .isNumeric().withMessage('registrationNumber must be integer'),
     ]
   }
+
+  createUser() {
+    return [
+      body('fullName')
+        .optional()
+        .isString().withMessage('fullName must be string'),
+      body('emailAddress')
+        .optional()
+        .isEmail().withMessage('emailAddress must be email format'),
+      body('accountNumber')
+        .optional()
+        .isNumeric().withMessage('accountNumber must be integer'),
+      body('registrationNumber')
+        .optional()
+        .isNumeric().withMessage('registrationNumber must be integer'),
+    ];
+  };
 };
