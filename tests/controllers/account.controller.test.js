@@ -80,13 +80,13 @@ describe('AccountController', () => {
     const dummyAccounts = [
       {
         "accountId": "64110dc675b9d22c27eb09f3",
-        "accountId": "64110dc675b9d22c27eb09f1",
+        "userId": "64110dc675b9d22c27eb09f1",
         "accountName": "jhon",
         "lastLoginDateTime": "2023-03-15T11:54:02.368Z"
       },
       {
           "accountId": "64110de775b9d22c27eb09fa",
-          "accountId": "64110de775b9d22c27eb09f8",
+          "userId": "64110de775b9d22c27eb09f8",
           "accountName": "jhon2",
           "lastLoginDateTime": "2023-03-15T00:14:31.519Z"
       }
