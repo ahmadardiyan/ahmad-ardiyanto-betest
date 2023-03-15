@@ -50,7 +50,8 @@ export default class AccountService {
 
   async generateToken (account) {
     const data = {
-      id: account._id,
+      accountId: account._id,
+      userId: account.userId._id,
       userName: account.userName,
       fullName: account.userId.fullName,
       emailAddress: account.userId.emailAddress

@@ -71,11 +71,7 @@ export default class UserController {
       const user = await this.userService.getUser(id)
 
       if (!user) {
-        return res.status(404).json({
-          status: 'FAILED',
-          message: 'data user not found',
-          data: {}
-        })
+        throw new Error('data user not found');
       }
 
       return res.status(200).json({
@@ -112,7 +108,25 @@ export default class UserController {
 
   async deleteUser(req, res) {
     try {
-    
+      const { id } = req.params;
+      const { user } = req;
+
+      if (user.userId == id) {
+        throw new Error('can not delete yourself');
+      };
+
+      const result = await this.userService.deleteUser(id);
+
+      if (!result.deleteCount) {
+        throw new Error('failed delete user')
+      }
+
+      return res.status(200).json({
+        status: 'OK',
+        message: 'delete user successfully',
+        data: {}
+      })
+
     } catch (error) {
       return res.status(400).json({
         status: 'FAILED',

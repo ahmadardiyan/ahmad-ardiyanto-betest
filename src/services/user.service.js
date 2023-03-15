@@ -101,9 +101,9 @@ export default class UserService {
   }
   
   async updateUser({id, body}) {
-    
+
   }
   async deleteUser(id) {
-
+    return await this.userModel.deleteOne({_id: id})
   }
 }
