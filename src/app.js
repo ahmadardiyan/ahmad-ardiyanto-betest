@@ -14,7 +14,7 @@ const app = () => {
   const database = mongoose.connection;
 
   database.on('error', (error) => {
-      console.log(error)
+    console.log(`Database error: ${error}`)
   })
 
   app.use(express.json());

@@ -1,12 +1,14 @@
 import userModel from '../models/user.model.js';
 import accountModel from '../models/account.model.js';
 import PaginateHelper from '../helpers/paginate.helper.js';
+import RedisHelper from '../helpers/redis.helper.js';
 
 export default class UserService {
   constructor() {
     this.userModel = userModel;
     this.accountModel = accountModel;
     this.paginateHelper = new PaginateHelper();
+    this.redisHelper = new RedisHelper();
   }
 
   async getUsers(query) {
@@ -16,35 +18,52 @@ export default class UserService {
       skip,
       accountNumber,
       registrationNumber
-    } = query
+    } = query;
 
-    let filter = {}
-    if (accountNumber) {
-      filter['accountNumber'] = {
-        $eq: accountNumber
-      }
+    let dataRedis = {};
+    let keyRedis;
+    if (!(accountNumber || registrationNumber)) {
+      keyRedis = `get-users-page-${page}-limit-${limit}-skip-${skip}`
+      dataRedis = await this.redisHelper.getRedis(keyRedis);
     }
 
-    if (registrationNumber) {
-      filter['registrationNumber'] = {
-        $eq: registrationNumber
+    let users = dataRedis?.users
+    let meta = dataRedis?.meta
+
+    if (!(users || meta)) {
+
+      let filter = {}
+      if (accountNumber) {
+        filter['accountNumber'] = {
+          $eq: accountNumber
+        }
+      }
+
+      if (registrationNumber) {
+        filter['registrationNumber'] = {
+          $eq: registrationNumber
+        }
+      }
+
+      users = await this.userModel.find(filter).limit(limit).skip(skip);
+      let count = await this.userModel.find(filter).countDocuments().exec();
+
+      users = users.map( user => {
+        return {
+          userId: user._id,
+          fullName: user.fullName,
+          emailAddress: user.emailAddress,
+          accountNumber: user.accountNumber,
+          registrationNumber: user.registrationNumber
+        };
+      });
+
+      meta = this.paginateHelper.createMeta({limit, totalData: count, page })
+
+      if (keyRedis) {
+        await this.redisHelper.setRedis({key: keyRedis, data: {users, meta}})
       }
     }
-
-    let count = await this.userModel.find(filter).countDocuments().exec();
-    let users = await this.userModel.find(filter).limit(limit).skip(skip);
-
-    users = users.map( user => {
-      return {
-        userId: user._id,
-        fullName: user.fullName,
-        emailAddress: user.emailAddress,
-        accountNumber: user.accountNumber,
-        registrationNumber: user.registrationNumber
-      };
-    });
-
-    const meta = this.paginateHelper.createMeta({limit, totalData: count, page })
 
     return {users, meta};
   }
