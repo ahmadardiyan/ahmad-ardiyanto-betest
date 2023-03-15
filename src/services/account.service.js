@@ -120,4 +120,14 @@ export default class AccountService {
     const meta = this.paginateHelper.createMeta({limit, totalData: count, page })
     return {accounts, meta};
   }
+
+  async getAccount(id) {
+    const account = await this.accountModel.findOne({ _id: id })
+
+    if (!account) {
+      throw new Error('account not found');
+    }
+
+    return account;
+  }
 }

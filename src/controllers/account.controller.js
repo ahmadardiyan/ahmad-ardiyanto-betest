@@ -75,4 +75,32 @@ export default class AccountController {
       })
     }
   }
+
+  async getAccount (req, res) {
+    try {
+      const { id } = req.params
+
+      const account = await this.accountService.getAccount(id)
+
+      if (!account) {
+        throw new Error('data account not found');
+      }
+
+      return res.status(200).json({
+        status: 'OK',
+        message: 'data account found',
+        data: {
+          account
+        }
+      })
+    } catch (error) {
+      return res.status(400).json({
+        status: 'FAILED',
+        message: 'failed get account',
+        data: {
+          error: error.message
+        }
+      })
+    }
+  }
 }

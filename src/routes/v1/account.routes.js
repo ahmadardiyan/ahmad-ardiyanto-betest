@@ -17,4 +17,9 @@ router.get('/',
   async (req, res) => await accountController.getAccounts(req, res)
 )
 
+router.get('/:id',
+  async (req, res, next) => await accountMiddleware.verifyToken(req, res, next),
+  async (req, res) => await accountController.getAccount(req, res)
+)
+
 export default router;
